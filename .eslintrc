@@ -1,0 +1,19 @@
+{
+  "parser": "babel-eslint",
+  "extends": "eslint-config-airbnb",
+  "rules": {
+    "no-console": [0],
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "no-mixed-operators": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "react/no-array-index-key": 0,
+    "no-underscore-dangle": 0,
+    "react/no-did-mount-set-state": 0,
+    "no-eval": 0,
+    "react/forbid-prop-types": [<enabled>, { "forbid": [<string>] }]
+  },
+  "ecmaFeatures": {
+    "generators": true,
+    "experimentalObjectRestSpread": true
+  }
+}
