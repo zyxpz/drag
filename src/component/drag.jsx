@@ -1,6 +1,8 @@
 /* global document */
 import React, { createElement } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import '../css/drag.less';
 
 const now = +(new Date());
 let index = 0;
@@ -25,9 +27,9 @@ export default class Drag extends React.Component {
     tag: 'div',
     Option: {},
     dragStyle: {},
-    dragClassName: '',
+    dragClassName: 'dragWarp',
     dropStyle: {},
-    dropClassName: '',
+    dropClassName: 'dropWarp',
     defaultValue: [],
     onChange: loop,
   };
@@ -47,7 +49,6 @@ export default class Drag extends React.Component {
     const {
       defaultValue = [],
     } = this.props;
-    console.log();
     if (defaultValue.length > 0) {
       this.setState({
         list: this.handleValudId(defaultValue),
@@ -77,12 +78,14 @@ export default class Drag extends React.Component {
     }
   ))
 
+  buildSetClassName = ele => ele.split(' ').slice(1).toString().replace(/,/gi, ' ')
+
   /**
    * 拖拽开始
    */
   handleDragStart = (e, data) => {
     const {
-      dragClassName = '',
+      dragClassName,
     } = this.props;
     /**
      * 火狐bug
@@ -91,7 +94,7 @@ export default class Drag extends React.Component {
 
     iddd = e.target.id;
 
-    if (e.target.parentNode.className === dragClassName) {
+    if (this.buildSetClassName(e.target.parentNode.className) === dragClassName) {
       e.target.addEventListener('drag', this.handleOndrag);
 
       e.target.addEventListener('dragend', this.handleDragEnd);
@@ -153,21 +156,19 @@ export default class Drag extends React.Component {
   handleDragEnter = (e) => {
     e.preventDefault();
     const {
-      dropClassName = '',
-      dragClassName = '',
+      dropClassName,
+      dragClassName,
       Option: {
         dropWarp: {
           classNames = '',
         },
       },
     } = this.props;
-    switch (e.target.className) {
+    switch (this.buildSetClassName(e.target.className) || e.target.parentNode.className) {
       case dropClassName:
         console.log('进入目标容器');
 
         this.dragEnterData = this.dragStartData;
-
-        e.target.addEventListener('dragover', this.handleOnDragOver);
 
         e.target.addEventListener('dragleave', this.handleOnDragLeave);
         break;
@@ -179,7 +180,7 @@ export default class Drag extends React.Component {
       case classNames:
         if (iddd) {
           this.setState({
-            list: this.buildListShow({ id: iddd, i: e.target.getAttribute('index'), type: 'drag' }),
+            list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
           });
         }
         break;
@@ -200,9 +201,9 @@ export default class Drag extends React.Component {
    */
   handleOnDragLeave = (e) => {
     const {
-      dropClassName = '',
+      dropClassName,
     } = this.props;
-    if (e.target.className === dropClassName) {
+    if (this.buildSetClassName(e.target.className) === dropClassName) {
       console.log('脱离目标容器');
     } else {
       this.dragEnterData = {};
@@ -241,25 +242,77 @@ export default class Drag extends React.Component {
     let idI = '';
 
     switch (type) {
+      case 'left':
+        arr.splice(i - 1, 0, list[i]);
+        break;
+      case 'right':
+        arr.splice(i + 1, 0, list[i]);
+        break;
       case 'drag':
         idI = list.findIndex(item => item.id === id);
         arr.splice(i, 0, list[idI]);
         break;
 
-      default:
+      default: // 删除
         break;
     }
-
     return arr;
   };
 
+  handleClick = (current) => {
+    const {
+      onChange,
+    } = this.props;
+    const list = this.buildListShow(current);
+    this.setState({
+      list,
+    });
+    onChange(list.map(item => item.itemData));
+  }
+
+  renderMask(id, cIndex) {
+    const {
+      list = [],
+    } = this.state;
+    return (
+      <div className="__mask">
+        {
+          cIndex !== 0
+            ? (
+              <span
+                onClick={() => this.handleClick({ id, i: cIndex, type: 'left' })}
+              >
+                &#10094;
+              </span>
+            )
+            : <span />
+        }
+        <span
+          onClick={() => this.handleClick({ id, i: cIndex, type: 'delete' })}
+        >
+          &#10006;
+        </span>
+        {
+          cIndex !== list.length - 1
+            ? (
+              <span
+                onClick={() => this.handleClick({ id, i: cIndex, type: 'right' })}
+              >
+                &#10095;
+              </span>
+            )
+            : <span />
+        }
+      </div>
+    );
+  }
+
   render() {
-    // console.log(this.props);
     const {
       Option = {},
       tag: Tag,
-      dragClassName = '',
-      dropClassName = '',
+      dragClassName,
+      dropClassName,
       dragStyle = {},
       dropStyle = {},
     } = this.props;
@@ -268,78 +321,72 @@ export default class Drag extends React.Component {
       list = [],
     } = this.state;
     return (
-      <div>
+      <div className="drag-drop-warp">
         {
-          Object.keys(Option).map((item, i) => {
-            console.log();
-            return item === 'dragWarp' ? (
+          Object.keys(Option).map((item, i) => (item === 'dragWarp' ? (
+            <div
+              className={classnames('drop-warp', dragClassName)}
+              style={dragStyle}
+              key={i}
+            >
+              {
+                Option[item].dragData.map((dItem, di) => (
+                  <Tag
+                    className={Option[item].classNames}
+                    style={{ ...Option[item].styles }}
+                    key={di}
+                    onDragStart={e => this.handleDragStart(e, dItem)}
+                    draggable
+                  >
+                    {
+                      createElement(
+                        Option[item].render,
+                        {
+                          ...dItem,
+                        },
+                      )
+                    }
+                  </Tag>
+                ))
+              }
+            </div>
+          )
+            : (
               <div
-                className={dragClassName}
-                style={dragStyle}
                 key={i}
+                style={dropStyle}
+                className={classnames('drop-warp', dropClassName)}
               >
                 {
-                  Option[item].dragData.map((dItem, di) => {
-                    console.log();
-                    return (
-                      <Tag
-                        className={Option[item].classNames}
-                        style={{ ...Option[item].styles }}
-                        key={di}
-                        onDragStart={e => this.handleDragStart(e, dItem)}
-                        draggable
-                      >
-                        {
-                          createElement(
-                            Option[item].render,
-                            {
-                              ...dItem,
-                            },
-                          )
-                        }
-                      </Tag>
-                    );
-                  })
+                  list.length > 0 ? list.map((dpItem, dpI) => (
+                    <Tag
+                      className={Option[item].classNames}
+                      style={{ ...Option[item].styles, position: 'relative' }}
+                      key={dpI}
+                      draggable
+                      id={dpItem.id}
+                      index={dpI}
+                      onDragStart={e => this.handleDragStart(e)}
+                      onDragEnd={e => this.handleDragEnd(e)}
+                    >
+                      {
+                        createElement(
+                          Option[item].render,
+                          { ...dpItem.itemData },
+                        )
+                      }
+                      {
+                        this.renderMask(dpItem.id, dpI)
+                      }
+                    </Tag>
+                  ))
+                    : (
+                      ''
+                    )
                 }
               </div>
-            )
-              : (
-                <div
-                  key={i}
-                  style={dropStyle}
-                  className={dropClassName}
-                >
-                  {
-                    list.length > 0 ? list.map((dpItem, dpI) => {
-                      console.log();
-                      return (
-                        <Tag
-                          className={Option[item].classNames}
-                          style={{ ...Option[item].styles }}
-                          key={dpI}
-                          draggable
-                          id={dpItem.id}
-                          index={dpI}
-                          onDragStart={e => this.handleDragStart(e)}
-                          onDragEnd={e => this.handleDragEnd(e)}
-                        >
-                          {
-                            createElement(
-                              Option[item].render,
-                              { ...dpItem.itemData },
-                            )
-                          }
-                        </Tag>
-                      );
-                    })
-                      : (
-                        ''
-                      )
-                  }
-                </div>
 
-              );
-          })
+            )))
         }
       </div>
     );
