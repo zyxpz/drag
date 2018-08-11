@@ -21,6 +21,13 @@ const styles = {
     height: '200px',
     border: 'solid 1px blue',
   },
+  li2: {
+    width: '80px',
+    height: '100%',
+    display: 'inline-block',
+    textAlign: 'center',
+    border: 'solid 1px black',
+  },
 };
 
 const defaultValues = [
@@ -53,7 +60,7 @@ class App extends React.Component {
       },
       dropWarp: {
         classNames: 'dropWarp-li',
-        styles: { ...styles.li },
+        styles: { ...styles.li2 },
         render: data => (
           <span>
             {data.text}
