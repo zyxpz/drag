@@ -37,25 +37,23 @@ class App extends React.Component {
           { text: 4 },
         ],
         classNames: 'dragWarp',
-        styles: { ...styles.dragWarp },
-        render: (data, key) => {
-          console.log(data);
-          return (
-            <span
-              style={{ ...styles.li }}
-              draggable
-              key={key}
-            >
-              {data.data.text}
-            </span>
-          );
-        },
+        styles: { display: 'inline-block' },
+        render: data => (
+          <span
+            style={{ ...styles.li }}
+            draggable
+          >
+            {data.data.text}
+          </span>
+        ),
       },
       dropWarp: {
         classNames: 'dropWarp',
         styles: { ...styles.drop },
-        render: () => (
-          <div />
+        render: data => (
+          <span>
+            {data.data.text}
+          </span>
         ),
       },
     };
@@ -65,6 +63,7 @@ class App extends React.Component {
     return (
       <Drag
         Option={this.option}
+        styles={{ ...styles.dragWarp }}
       />
     );
   }
