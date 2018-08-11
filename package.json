@@ -9,14 +9,15 @@
   },
   "bugs": "",
   "entry": {
-    "index": "./cdn"
+    "index": "./cdn",
+    "test": "./test/test.js"
   },
   "scripts": {
     "start": "npm run dev",
     "dev": "dora --plugins webpack,proxy",
     "build": "atool-build",
     "compile": "rm -rf ./lib && babel src --out-dir lib --copy-files",
-    "doc": "atool-doc",
+    "doc": "npm run compile && atool-doc",
     "lint": "eslint --ext .js src",
     "eslint-fix": "eslint --fix ./src",
     "publish": "npm run compile && sudo tnpm publish"
@@ -24,6 +25,7 @@
   "author": "wb-mxl231031@alibaba-icn.com",
   "license": "ISC",
   "dependencies": {
+    "classnames": "^2.2.6",
     "less": "^3.8.0",
     "prop-types": "^15.6.2",
     "r": "^0.0.5",

@@ -1,6 +1,7 @@
 /* global document */
 import React, { createElement } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import '../css/drag.less';
 
 const now = +(new Date());
@@ -26,9 +27,9 @@ export default class Drag extends React.Component {
     tag: 'div',
     Option: {},
     dragStyle: {},
-    dragClassName: 'dragWarp-li',
+    dragClassName: 'dragWarp',
     dropStyle: {},
-    dropClassName: 'dropWarp-li',
+    dropClassName: 'dropWarp',
     defaultValue: [],
     onChange: loop,
   };
@@ -77,6 +78,8 @@ export default class Drag extends React.Component {
     }
   ))
 
+  buildSetClassName = ele => ele.split(' ').slice(1).toString().replace(/,/gi, ' ')
+
   /**
    * 拖拽开始
    */
@@ -91,7 +94,7 @@ export default class Drag extends React.Component {
 
     iddd = e.target.id;
 
-    if (e.target.parentNode.className === dragClassName) {
+    if (this.buildSetClassName(e.target.parentNode.className) === dragClassName) {
       e.target.addEventListener('drag', this.handleOndrag);
 
       e.target.addEventListener('dragend', this.handleDragEnd);
@@ -161,13 +164,11 @@ export default class Drag extends React.Component {
         },
       },
     } = this.props;
-    switch (e.target.className) {
+    switch (this.buildSetClassName(e.target.className) || e.target.parentNode.className) {
       case dropClassName:
         console.log('进入目标容器');
 
         this.dragEnterData = this.dragStartData;
-
-        e.target.addEventListener('dragover', this.handleOnDragOver);
 
         e.target.addEventListener('dragleave', this.handleOnDragLeave);
         break;
@@ -179,7 +180,7 @@ export default class Drag extends React.Component {
       case classNames:
         if (iddd) {
           this.setState({
-            list: this.buildListShow({ id: iddd, i: e.target.getAttribute('index'), type: 'drag' }),
+            list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
           });
         }
         break;
@@ -202,7 +203,7 @@ export default class Drag extends React.Component {
     const {
       dropClassName,
     } = this.props;
-    if (e.target.className === dropClassName) {
+    if (this.buildSetClassName(e.target.className) === dropClassName) {
       console.log('脱离目标容器');
     } else {
       this.dragEnterData = {};
@@ -320,11 +321,11 @@ export default class Drag extends React.Component {
       list = [],
     } = this.state;
     return (
-      <div>
+      <div className="drag-drop-warp">
         {
           Object.keys(Option).map((item, i) => (item === 'dragWarp' ? (
             <div
-              className={dragClassName}
+              className={classnames('drop-warp', dragClassName)}
               style={dragStyle}
               key={i}
             >
@@ -354,7 +355,7 @@ export default class Drag extends React.Component {
               <div
                 key={i}
                 style={dropStyle}
-                className={dropClassName}
+                className={classnames('drop-warp', dropClassName)}
               >
                 {
                   list.length > 0 ? list.map((dpItem, dpI) => (
