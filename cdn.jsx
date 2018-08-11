@@ -24,10 +24,10 @@ const styles = {
 };
 
 const defaultValues = [
-  { text: 5 },
-  { text: 6 },
-  { text: 7 },
-  { text: 8 },
+  { text: 5, id: '5' },
+  { text: 6, id: '6' },
+  { text: 7, id: '7' },
+  { text: 8, id: '8' },
 ];
 
 class App extends React.Component {
@@ -36,10 +36,10 @@ class App extends React.Component {
     this.option = {
       dragWarp: {
         dragData: [
-          { text: 1 },
-          { text: 2 },
-          { text: 3 },
-          { text: 4 },
+          { text: 1, id: '1' },
+          { text: 2, id: '2' },
+          { text: 3, id: '3' },
+          { text: 4, id: '4' },
         ],
         classNames: 'dragWarp-li',
         styles: { display: 'inline-block' },
@@ -47,7 +47,7 @@ class App extends React.Component {
           <span
             style={{ ...styles.li }}
           >
-            {data.data.text}
+            {data.text}
           </span>
         ),
       },
@@ -56,11 +56,15 @@ class App extends React.Component {
         styles: { ...styles.li },
         render: data => (
           <span>
-            {data.data.text}
+            {data.text}
           </span>
         ),
       },
     };
+  }
+
+  handleOnchange = (data) => {
+    console.table(data);
   }
 
   render() {
@@ -71,7 +75,8 @@ class App extends React.Component {
         dragStyle={{ ...styles.dragWarp }}
         dropClassName="dropWarp"
         dropStyle={{ ...styles.drop }}
-      // defaultValue={defaultValues}
+        defaultValue={defaultValues}
+        onChange={this.handleOnchange}
       />
     );
   }
