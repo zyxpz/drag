@@ -23,7 +23,12 @@ const styles = {
   },
 };
 
-const dragData = [1, 2, 3, 4];
+const defaultValues = [
+  { text: 5 },
+  { text: 6 },
+  { text: 7 },
+  { text: 8 },
+];
 
 class App extends React.Component {
   constructor(props) {
@@ -36,20 +41,19 @@ class App extends React.Component {
           { text: 3 },
           { text: 4 },
         ],
-        classNames: 'dragWarp',
+        classNames: 'dragWarp-li',
         styles: { display: 'inline-block' },
         render: data => (
           <span
             style={{ ...styles.li }}
-            draggable
           >
             {data.data.text}
           </span>
         ),
       },
       dropWarp: {
-        classNames: 'dropWarp',
-        styles: { ...styles.drop },
+        classNames: 'dropWarp-li',
+        styles: { ...styles.li },
         render: data => (
           <span>
             {data.data.text}
@@ -63,7 +67,11 @@ class App extends React.Component {
     return (
       <Drag
         Option={this.option}
-        styles={{ ...styles.dragWarp }}
+        dragClassName="dragWarp"
+        dragStyle={{ ...styles.dragWarp }}
+        dropClassName="dropWarp"
+        dropStyle={{ ...styles.drop }}
+      // defaultValue={defaultValues}
       />
     );
   }
