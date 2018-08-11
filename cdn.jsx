@@ -3,48 +3,74 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Drag } from './src';
 
-
-const Item = Drag.item;
-
 const styles = {
   dragWarp: {
     width: '200px',
     height: '100px',
     border: 'solid 1px blue',
-    textAlign: 'center',
   },
   li: {
-    marginRight: '6px',
+    width: '40px',
+    height: '100%',
+    display: 'inline-block',
+    textAlign: 'center',
+    border: 'solid 1px black',
   },
   drop: {
-    width: '200px',
-    height: '100px',
+    width: '400px',
+    height: '200px',
     border: 'solid 1px blue',
   },
 };
 
 const dragData = [1, 2, 3, 4];
 
-render(
-  <Drag
-    dragWarp="drag"
-  >
-
-    <div>
-      <div className="drag" style={{ ...styles.dragWarp }}>
-        {
-          dragData.map((item, i) => (
-            <span key={i} style={{ ...styles.li }}>
-              {item}
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.option = {
+      dragWarp: {
+        dragData: [
+          { text: 1 },
+          { text: 2 },
+          { text: 3 },
+          { text: 4 },
+        ],
+        classNames: 'dragWarp',
+        styles: { ...styles.dragWarp },
+        render: (data, key) => {
+          console.log(data);
+          return (
+            <span
+              style={{ ...styles.li }}
+              draggable
+              key={key}
+            >
+              {data.data.text}
             </span>
-          ))
-        }
-      </div>
-      {/* <div className="drop" style={{ ...styles.drop }} /> */}
-      <Item
-        className="drop"
+          );
+        },
+      },
+      dropWarp: {
+        classNames: 'dropWarp',
+        styles: { ...styles.drop },
+        render: () => (
+          <div />
+        ),
+      },
+    };
+  }
+
+  render() {
+    return (
+      <Drag
+        Option={this.option}
       />
-    </div>
-  </Drag>,
+    );
+  }
+}
+
+render(
+  <App />,
   document.querySelector('.app'),
 );
