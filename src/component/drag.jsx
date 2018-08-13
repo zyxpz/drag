@@ -147,7 +147,7 @@ export default class Drag extends React.Component {
       this.dragEnterData = {};
     }
 
-    onChange(list);
+    onChange(list.map(item => item.itemData));
   }
 
   /**
