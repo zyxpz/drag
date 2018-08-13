@@ -175,7 +175,7 @@ export default class Drag extends React.Component {
       console.log('返回原来容器');
       this.dragEnterData = {};
     } else if (
-      e.target.parentNode.className === this.dropList.className
+      e.target.parentNode.getAttribute('dropItem') === this.dropList.getAttribute('dropItem')
     ) {
       if (iddd) {
         if (list.filter(item => item.id === iddd).length === 0) {
@@ -374,6 +374,7 @@ export default class Drag extends React.Component {
                       onDragStart={e => this.handleDragStart(e)}
                       onDragEnd={e => this.handleDragEnd(e)}
                       ref={dl => this.dropList = dl}
+                      dropitem="drop-Item"
                     >
                       {
                         createElement(
