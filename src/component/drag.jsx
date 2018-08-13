@@ -84,9 +84,6 @@ export default class Drag extends React.Component {
    * 拖拽开始
    */
   handleDragStart = (e, data) => {
-    const {
-      dragClassName,
-    } = this.props;
     /**
      * 火狐bug
      */
@@ -96,7 +93,7 @@ export default class Drag extends React.Component {
       iddd = e.target.id;
     }
 
-    if (this.buildSetClassName(e.target.parentNode.className) === dragClassName) {
+    if (e.target.parentNode === this.dragWarp) {
       e.target.addEventListener('drag', this.handleOndrag);
 
       e.target.addEventListener('dragend', this.handleDragEnd);
@@ -202,10 +199,7 @@ export default class Drag extends React.Component {
    * 脱离目标容器
    */
   handleOnDragLeave = (e) => {
-    const {
-      dropClassName,
-    } = this.props;
-    if (this.buildSetClassName(e.target.className) === dropClassName) {
+    if (e.target === this.dropWarp) {
       console.log('脱离目标容器');
     } else {
       this.dragEnterData = {};
