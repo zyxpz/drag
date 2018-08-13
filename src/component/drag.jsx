@@ -92,14 +92,21 @@ export default class Drag extends React.Component {
      */
     e.dataTransfer.setData('text', data);
 
-    iddd = e.target.id;
+    if (e.target.id) {
+      iddd = e.target.id;
+    }
 
     if (this.buildSetClassName(e.target.parentNode.className) === dragClassName) {
       e.target.addEventListener('drag', this.handleOndrag);
 
       e.target.addEventListener('dragend', this.handleDragEnd);
 
-      this.dragStartData = data;
+      this.dragStartData = {
+        id: getUid(),
+        itemData: data,
+      };
+
+      iddd = this.dragStartData.id;
     }
   }
 
@@ -132,7 +139,7 @@ export default class Drag extends React.Component {
      * 不再向list中添加
      */
     if (Object.keys(this.dragEnterData).length > 0) {
-      list.push({ id: getUid(), itemData: this.dragEnterData });
+      list.push(this.dragEnterData);
       this.setState({
         list,
       });
@@ -164,6 +171,9 @@ export default class Drag extends React.Component {
         },
       },
     } = this.props;
+    const {
+      list = [],
+    } = this.state;
     switch (this.buildSetClassName(e.target.className) || e.target.parentNode.className) {
       case dropClassName:
         console.log('进入目标容器');
@@ -179,9 +189,16 @@ export default class Drag extends React.Component {
       // todo
       case classNames:
         if (iddd) {
-          this.setState({
-            list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
-          });
+          if (list.filter(item => item.id === iddd).length === 0) {
+            list.push(this.dragStartData);
+          } else {
+            this.setState({
+              list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
+            });
+          }
+        } else {
+          console.log('没有id新增');
+          this.dragEnterData = this.dragStartData;
         }
         break;
       default:
@@ -193,7 +210,7 @@ export default class Drag extends React.Component {
    * 目标容器中拖动
    */
   handleOnDragOver = () => {
-    // console.log('目标容器中拖动');
+    console.log('目标容器中拖动');
   }
 
   /**
