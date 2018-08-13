@@ -175,19 +175,18 @@ export default class Drag extends React.Component {
       console.log('返回原来容器');
       this.dragEnterData = {};
     } else if (
-      e.target.parentNode.getAttribute('dropItem') === this.dropList.getAttribute('dropItem')
+      this.dropList
+      && e.target.parentNode.getAttribute('dropItem') === this.dropList.getAttribute('dropItem')
     ) {
-      if (iddd) {
-        if (list.filter(item => item.id === iddd).length === 0) {
-          list.push(this.dragStartData);
-        } else {
-          this.setState({
-            list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
-          });
-        }
+      if (list.filter(item => item.id === iddd).length === 0) {
+        list.push(this.dragStartData);
+        this.setState({
+          list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
+        });
       } else {
-        console.log('没有id新增');
-        this.dragEnterData = this.dragStartData;
+        this.setState({
+          list: this.buildListShow({ id: iddd, i: e.target.parentNode.getAttribute('index'), type: 'drag' }),
+        });
       }
     }
   }
