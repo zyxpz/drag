@@ -1,13 +1,15 @@
 {
   "name": "mido-react-drag",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "拖拽",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/zyxpz/drag"
   },
-  "bugs": "",
+  "bugs": {
+    "url": "https://github.com/zyxpz/drag/issues"
+  },
   "entry": {
     "index": "./cdn",
     "test": "./test/test.js"
@@ -20,9 +22,9 @@
     "doc": "npm run compile && atool-doc",
     "lint": "eslint --ext .js src",
     "eslint-fix": "eslint --fix ./src",
-    "publish": "npm run compile && sudo tnpm publish"
+    "publish": "npm run compile && npm publish"
   },
-  "author": "wb-mxl231031@alibaba-icn.com",
+  "author": "MidnightBlues",
   "license": "ISC",
   "dependencies": {
     "classnames": "^2.2.6",
@@ -56,5 +58,11 @@
       "react",
       "stage-0"
     ]
-  }
+  },
+  "files": [
+    "bin",
+    "lib",
+    "package.json",
+    "README.md"
+  ]
 }
